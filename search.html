@@ -17,8 +17,10 @@ layout: default
 <script>
 SimpleJekyllSearch({
   searchInput: document.getElementById('search-input'),
-  searchResultTemplate: '<div><a href="{url}"><h2>{title}</h2></a><span>{date}</span></div>',
+  searchResultTemplate: '<li><div><a href="{url}">{title}</a><span>{date}</span></div></li>',
   resultsContainer: document.getElementById('results-container'),
-  json: '/search.json'
+  json: '/search.json',
+  fuzzy: true,
+  noResultsText: "Sorry, there seems to be no matching posts. :("
 })
 </script>
