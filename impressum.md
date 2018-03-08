@@ -4,18 +4,19 @@ title: Impressum
 permalink: /impressum/
 ---
 
-Impressum
-===
-
 Angaben gemäß § 5 TMG
 ---
 
 Jochen Grün
+
 Mühlstraße 16
+
 71717 Beilstein 
 
-Kontakt: 
-Telefon: +49 (0) 176 61238352
+### Kontakt: 
+
+Telefon: +49 (0) 176 612 38 352
+
 E-Mail: jochen.gruen@googlemail.com
 
 Haftungsausschluss: 
