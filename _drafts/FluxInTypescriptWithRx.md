@@ -115,7 +115,8 @@ The primary thing we can do with an action is trigger a new event:
 The second thing we want to do is to observe the action (usually from a store):
 
   ```
-  interface IObservableAction<TActionEvent> extends IAction<TActionEvent> {
+  interface IObservableAction<TActionEvent> 
+    extends IAction<TActionEvent> {
     observe(): Rx.Observable<TActionEvent>;
   }
   ```
@@ -123,8 +124,8 @@ The second thing we want to do is to observe the action (usually from a store):
 As actions are stateless event streams the straight forward choice for their implementation is then an Rx subject.
 
   ```
-  class Action<TActionEvent> implements
-  IObservableAction<TActionEvent> {
+  class Action<TActionEvent> 
+    implements IObservableAction<TActionEvent> {
     private subject: Rx.Subject<TEventData>;
 
     trigger(eventData: TActionEvent): void {
@@ -172,12 +173,8 @@ Because stores are stateful we will not use the default subject. Instead we use 
       this.subject = new Rx.BehaviorSubject<TState>(defaultState);
     }
 
-    public subscribe(next: (state: TState) => void): Rx.Subscription {
-      return this.observe().subscribe(next);
-    }
-
-    public observe(): Rx.Observable<TState> {
-      return this.subject;
+    protected get state(): TState {
+      return this.subject.getValue();
     }
 
     protected setState(state: TState): void {
@@ -186,10 +183,18 @@ Because stores are stateful we will not use the default subject. Instead we use 
         this.subject.next(state);
       }
     }
+
+    public subscribe(next: (state: TState) => void): Rx.Subscription {
+      return this.observe().subscribe(next);
+    }
+
+    public observe(): Rx.Observable<TState> {
+      return this.subject;
+    }
   }
   ```
 
-This forms a very rudimentary base class for your stores. It will need to be extended to be practical but it works with this level of implementation already. 
+This forms a very rudimentary base class for our stores but it works with this level of implementation already. 
 
 Server calls
 ----
@@ -230,6 +235,15 @@ I extracted the relevant code below from the link above:
   ```
 
 The action creator shown above  is a function returning a function which first dispatches the started action. Then it fetches something from the server. On success it dispatches the success action. On error it handles it somehow.
+
+### Async Actions with Rx
+
+When looking at what Redux does you have to decide between two things.
+
+1. Being explicit and verbose with separate actions for async start, success and error
+2. Being implicit and just using the async API, e.g. fetch, for starting and handling success, error
+
+There is a little tradeoff (little bit more code) to possibility number one, so lets examine it in more detail to find possible advantages of that approach.
 
 
 
