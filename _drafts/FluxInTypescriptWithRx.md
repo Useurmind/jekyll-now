@@ -3,7 +3,7 @@ Flux in TypeScript with Rx
 
 In this article I want to show my thoughts on how to implement a simple flux framework for TypeScript apps based on Rx.
 
-I will give you an overview of what flux is, how Facebook implements it in their examples and how we can do better with the help of the TypeScript compiler.
+I will give you an overview of what flux is, how common frameworks are implemented and how we can implement a framework based on Rx that takes advantage of the TypeScript intellisense and compiler.
 
 Flux
 ----
@@ -30,7 +30,27 @@ And probably a million more.
 Rx
 ---
 
+Rx is a very flexible implementation of the observer pattern. It handles event streams, their transformation and combination, and scheduling of the events to different receivers.
 
+It is a very mature framework available across a wide range of languages like C#, Java and TypeScript/JavaScript just to name a few.
+
+If you want some in depth introductions take a look at the following links:
+
+- [reactivex.io/intro](http://reactivex.io/intro.html)
+- [The introduction to Reactive Programming you've been missing](https://gist.github.com/staltz/868e7e9bc2a7b8c1f754)
+- [introtorx](http://www.introtorx.com)
+
+Why Rx for flux?
+----
+
+You probably ask yourself why we should use Rx to implement a flux framework.
+
+The point is that Rx already implements all technical components required for flux. These are:
+
+- observable objects (like the stores)
+- dispatching of event streams (like the actions)
+
+In addition it allows a very flexible combination of these components that you will miss in other frameworks.
 
 What do we need?
 ---
@@ -43,7 +63,7 @@ What else do we need to get a basic framework?
 - stores
 - server calls (we need to call a server to do most of the useful stuff)
 
-You could think of some more topics like e.g. dependency injection. But the most basic framework that still works will only contain the three parts above.
+You could think of some more topics like e.g. dependency injection or automatic state merging for react views. But the most basic framework that still works will only contain the three parts above.
 
 String Keys
 ----
@@ -67,16 +87,12 @@ Here is an example of such a switch statement (straight from [facebook/flux](htt
 
 Note the action.type property which is a string and must be defined by hand for each action.
 
-Personally I tend to stay away from string keys in my apis as far as possible. There are use cases for them especially in untyped languages like JavaScript out in interprocess communication. But if you have a strong compiler like in TypeScript you are not forced to use them.
-
-For example, in C# you can always replace a string key in your libraries api by a lambda expression from which you can derive e.g. a property name.
-
-Sadly such reflection is not yet possible in TypeScript.
+Personally I tend to stay away from string keys in my apis as far as possible. There are use cases for them especially in untyped languages like JavaScript or in interprocess communication. But if you have a strong compiler like in TypeScript you are not forced to use them.
 
 Rx: Everything is a stream
 -----
 
-What can we take from the previous section to design or own flux framework?
+What can we take from the previous section to design our own flux framework?
 
 ### Actions are streams
 
@@ -86,6 +102,46 @@ So why not define them as streams? True to the mantra of Reactive Programming "e
 
 The difference to dispatching in original flux then becomes this: you don't have a single dispatcher but one stream for each action that can be triggered.
 
+So let's first think about what an action should be able to do.
+
+The primary thing we can do with an action is trigger a new event:
+
+  ```
+  interface IAction<TActionEvent> {
+    trigger(eventData: TActionEvent): void;
+  }
+  ```
+
+The second thing we want to do is to observe the action (usually from a store):
+
+  ```
+  interface IObservableAction<TActionEvent> extends IAction<TActionEvent> {
+    observe(): Rx.Observable<TActionEvent>;
+  }
+  ```
+
+As actions are stateless event streams the straight forward choice for their implementation is then an Rx subject.
+
+  ```
+  class Action<TActionEvent> implements
+  IObservableAction<TActionEvent> {
+    private subject: Rx.Subject<TEventData>;
+
+    trigger(eventData: TActionEvent): void {
+      this.subject.next(eventData);
+    }
+
+    observe(): Rx.Observable<TActionEvent> {
+      return this.subject;
+    }
+  }
+  ```
+
+This is a very simple and straight forward implementation thanks to Rx. Just call `next` on the subject to trigger it.
+
+Returning an observable for observing the events in the action allows us to harness the power of all the available Rx operators.
+This useful for example when we not only want to observe the action but also the state of some other store and combine both into one handler.
+
 ### Stores are streams
 
 If everything is a stream then there is absolutely no reason for stores to not be a stream. The store concept lends itself very well to being implemented as a stream. Because of it's subscribable nature implementing it as a stream makes it subscribable by definition.
@@ -93,6 +149,47 @@ If everything is a stream then there is absolutely no reason for stores to not b
 But what travels through this stream? This question is easy to answer: the state of the store. 
 
 Each time the state of the store changes a new state item will be available in the stream.
+
+And what is the primary ability we want from a store? Correct, we want to subscribe it's state from the views.
+
+  ```
+  interface IStore<TState> {
+    subscribe(next: (state: TState) => void): Rx.Subscription;
+
+    observe(): Rx.Observable<TState>;
+  }
+  ```
+
+I also added the same observe call we know from the actions because there will be situations when we want to harness the full power of Rx to subscribe multiple stores or actions at once.
+
+Because stores are stateful we will not use the default subject. Instead we use the [behavior subject](http://reactivex.io/documentation/subject.html). This subject repeats the last state or a default state when new subscribers arrive. This assures that the complete state of the application is always available.
+
+  ```
+  class Store<TState> implements IStore<TState> {
+    private subject: Rx.BehaviorSubject<TState>;
+
+    constructor(defaultState: TState) {
+      this.subject = new Rx.BehaviorSubject<TState>(defaultState);
+    }
+
+    public subscribe(next: (state: TState) => void): Rx.Subscription {
+      return this.observe().subscribe(next);
+    }
+
+    public observe(): Rx.Observable<TState> {
+      return this.subject;
+    }
+
+    protected setState(state: TState): void {
+      if (state)
+      {
+        this.subject.next(state);
+      }
+    }
+  }
+  ```
+
+This forms a very rudimentary base class for your stores. It will need to be extended to be practical but it works with this level of implementation already. 
 
 Server calls
 ----
