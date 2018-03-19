@@ -77,13 +77,15 @@ In facebook/flux and also redux actions are plain JavaScript objects. I found th
 
 Here is an example of such a switch statement (straight from [facebook/flux](https://github.com/facebook/flux/blob/master/README.md)):
 
-    switch (action.type) {
-      case 'increment': 
-        return state + 1; 
-      case 'square': 
-        return state * state;
-      default: return state;
-    }
+```JavaScript
+switch (action.type) {
+  case 'increment': 
+    return state + 1; 
+  case 'square': 
+    return state * state;
+  default: return state;
+}
+```
 
 Note the action.type property which is a string and must be defined by hand for each action.
 
@@ -106,31 +108,37 @@ So let's first think about what an action should be able to do.
 
 The primary thing we can do with an action is trigger a new event:
 
-    interface IAction<TActionEvent> {
-      trigger(eventData: TActionEvent): void;
-    }
+```TypeScript
+interface IAction<TActionEvent> {
+  trigger(eventData: TActionEvent): void;
+}
+```
 
 The second thing we want to do is to observe the action (usually from a store):
 
-    interface IObservableAction<TActionEvent> 
-      extends IAction<TActionEvent> {
-      observe(): Rx.Observable<TActionEvent>;
-    }
+```TypeScript
+interface IObservableAction<TActionEvent> 
+  extends IAction<TActionEvent> {
+  observe(): Rx.Observable<TActionEvent>;
+}
+```
 
 As actions are stateless event streams the straight forward choice for their implementation is then an Rx subject.
 
-    class Action<TActionEvent> 
-      implements IObservableAction<TActionEvent> {
-      private subject: Rx.Subject<TEventData>;
+```TypeScript
+class Action<TActionEvent> 
+  implements IObservableAction<TActionEvent> {
+  private subject: Rx.Subject<TEventData>;
 
-      trigger(eventData: TActionEvent): void {
-        this.subject.next(eventData);
-      }
+  trigger(eventData: TActionEvent): void {
+    this.subject.next(eventData);
+  }
 
-      observe(): Rx.Observable<TActionEvent> {
-        return this.subject;
-      }
-    }
+  observe(): Rx.Observable<TActionEvent> {
+    return this.subject;
+  }
+}
+```
 
 This is a very simple and straight forward implementation thanks to Rx. Just call `next` on the subject to trigger it.
 
@@ -147,42 +155,46 @@ Each time the state of the store changes a new state item will be available in t
 
 And what is the primary ability we want from a store? Correct, we want to subscribe it's state from the views.
 
-    interface IStore<TState> {
-      subscribe(next: (state: TState) => void): Rx.Subscription;
+```TypeScript
+interface IStore<TState> {
+  subscribe(next: (state: TState) => void): Rx.Subscription;
 
-      observe(): Rx.Observable<TState>;
-    }
+  observe(): Rx.Observable<TState>;
+}
+```
 
 I also added the same observe call we know from the actions because there will be situations when we want to harness the full power of Rx to subscribe multiple stores or actions at once.
 
 Because stores are stateful we will not use the default subject. Instead we use the [behavior subject](http://reactivex.io/documentation/subject.html). This subject repeats the last state or a default state when new subscribers arrive. This assures that the complete state of the application is always available.
 
-    class Store<TState> implements IStore<TState> {
-      private subject: Rx.BehaviorSubject<TState>;
+```TypeScript
+class Store<TState> implements IStore<TState> {
+  private subject: Rx.BehaviorSubject<TState>;
 
-      constructor(defaultState: TState) {
-        this.subject = new Rx.BehaviorSubject<TState>(defaultState);
-      }
+  constructor(defaultState: TState) {
+    this.subject = new Rx.BehaviorSubject<TState>(defaultState);
+  }
 
-      protected get state(): TState {
-        return this.subject.getValue();
-      }
+  protected get state(): TState {
+    return this.subject.getValue();
+  }
 
-      protected setState(state: TState): void {
-        if (state)
-        {
-          this.subject.next(state);
-        }
-      }
-
-      public subscribe(next: (state: TState) => void): Rx.Subscription {
-        return this.observe().subscribe(next);
-      }
-
-      public observe(): Rx.Observable<TState> {
-        return this.subject;
-      }
+  protected setState(state: TState): void {
+    if (state)
+    {
+      this.subject.next(state);
     }
+  }
+
+  public subscribe(next: (state: TState) => void): Rx.Subscription {
+    return this.observe().subscribe(next);
+  }
+
+  public observe(): Rx.Observable<TState> {
+    return this.subject;
+  }
+}
+```
 
 This forms a very rudimentary base class for our stores but it works with this level of implementation already. 
 
@@ -207,7 +219,7 @@ See [redux.js.org/**ADVANCED**/async-actions](https://redux.js.org/advanced/asyn
 
 I extracted the relevant code below from the link above:
 
-```
+```JavaScript
 export function fetchPosts() {
   return function (dispatch) {
     dispatch(requestPosts(subreddit));
