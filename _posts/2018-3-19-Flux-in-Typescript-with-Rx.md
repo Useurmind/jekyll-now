@@ -77,7 +77,7 @@ In facebook/flux and also redux actions are plain JavaScript objects. I found th
 
 Here is an example of such a switch statement (straight from [facebook/flux](https://github.com/facebook/flux/blob/master/README.md)):
 
-```JavaScript
+```javascript
 switch (action.type) {
   case 'increment': 
     return state + 1; 
@@ -108,7 +108,7 @@ So let's first think about what an action should be able to do.
 
 The primary thing we can do with an action is trigger a new event:
 
-```TypeScript
+```typescript
 interface IAction<TActionEvent> {
   trigger(eventData: TActionEvent): void;
 }
@@ -116,7 +116,7 @@ interface IAction<TActionEvent> {
 
 The second thing we want to do is to observe the action (usually from a store):
 
-```TypeScript
+```typescript
 interface IObservableAction<TActionEvent> 
   extends IAction<TActionEvent> {
   observe(): Rx.Observable<TActionEvent>;
@@ -125,7 +125,7 @@ interface IObservableAction<TActionEvent>
 
 As actions are stateless event streams the straight forward choice for their implementation is then an Rx subject.
 
-```TypeScript
+```typescript
 class Action<TActionEvent> 
   implements IObservableAction<TActionEvent> {
   private subject: Rx.Subject<TEventData>;
@@ -155,7 +155,7 @@ Each time the state of the store changes a new state item will be available in t
 
 And what is the primary ability we want from a store? Correct, we want to subscribe it's state from the views.
 
-```TypeScript
+```typescript
 interface IStore<TState> {
   subscribe(next: (state: TState) => void): Rx.Subscription;
 
@@ -167,7 +167,7 @@ I also added the same observe call we know from the actions because there will b
 
 Because stores are stateful we will not use the default subject. Instead we use the [behavior subject](http://reactivex.io/documentation/subject.html). This subject repeats the last state or a default state when new subscribers arrive. This assures that the complete state of the application is always available.
 
-```TypeScript
+```typescript
 class Store<TState> implements IStore<TState> {
   private subject: Rx.BehaviorSubject<TState>;
 
@@ -219,7 +219,7 @@ See [redux.js.org/**ADVANCED**/async-actions](https://redux.js.org/advanced/asyn
 
 I extracted the relevant code below from the link above:
 
-```JavaScript
+```javascript
 export function fetchPosts() {
   return function (dispatch) {
     dispatch(requestPosts(subreddit));
