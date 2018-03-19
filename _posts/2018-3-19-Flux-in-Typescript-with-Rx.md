@@ -5,7 +5,7 @@ title: Flux in TypeScript with Rx
 
 In this article I want to show my thoughts on how to implement a simple flux framework for TypeScript apps based on Rx.
 
-I will give you an overview of what flux is, how common frameworks are implemented and how we can implement a framework based on Rx that takes advantage of the TypeScript intellisense and compiler.
+I will give you an overview of what flux is, how common frameworks are implemented and how we can implement a framework based on Rx that takes advantage of the TypeScript intellisense and compiler. 
 
 Flux
 ----
