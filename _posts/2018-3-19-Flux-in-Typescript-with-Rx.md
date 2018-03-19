@@ -207,22 +207,24 @@ See [redux.js.org/**ADVANCED**/async-actions](https://redux.js.org/advanced/asyn
 
 I extracted the relevant code below from the link above:
 
-    export function fetchPosts() {
-      return function (dispatch) {
-        dispatch(requestPosts(subreddit));
+```
+export function fetchPosts() {
+  return function (dispatch) {
+    dispatch(requestPosts(subreddit));
 
-        return fetch(`https://www.reddit.com/r/${subreddit}.json`)
-          .then(
-            response => response.json(),
-            error => console.log('An error occurred.', error)
-          )
-          .then(json =>
-            dispatch(receivePosts(subreddit, json))
-          )
-      }
-    }
+    return fetch(`https://www.reddit.com/r/${subreddit}.json`)
+      .then(
+        response => response.json(),
+        error => console.log('An error occurred.', error)
+      )
+      .then(json =>
+        dispatch(receivePosts(subreddit, json))
+      )
+  }
+}
+```
 
-The action creator shown above  is a function returning a function which first dispatches the started action. Then it fetches something from the server. On success it dispatches the success action. On error it handles it somehow.
+The action creator shown above is a function returning a function which first dispatches the started action. Then it fetches something from the server. On success it dispatches the success action. On error it handles it somehow.
 
 ### Async Actions with Rx
 
@@ -249,7 +251,7 @@ So we already have the following:
 
 We only need to put it all together!
 
-![FluxRx]({{ "/assets/img/fluxRx.svg" | absolute_url }})
+![FluxRx]({{ "/assets/img/FluxRx.svg" | absolute_url }})
 
 Because actions are streams you can inject them anywhere using DI or some other technique. But in most cases it makes sense to just create them in a store. 
 
