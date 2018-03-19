@@ -67,7 +67,7 @@ You could think of some more topics like e.g. dependency injection or automatic 
 
 String Keys
 ----
-In facebook/flux and also redux actions are plain JavaScript objects. I found the creation of objects with string keys (something natural in JavaScript) in TypeScript to be very unnatural. You need to create:
+In facebook/flux and also redux actions are plain JavaScript objects. I found the creation of objects with string keys (something natural in JavaScript and required to identify the type of action in redux) in TypeScript to be very unnatural. You need to create:
 
 - a constant string key
 - an interface for the action object referencing the string key (mostly named the same as the key)
@@ -141,7 +141,7 @@ As actions are stateless event streams the straight forward choice for their imp
 This is a very simple and straight forward implementation thanks to Rx. Just call `next` on the subject to trigger it.
 
 Returning an observable for observing the events in the action allows us to harness the power of all the available Rx operators.
-This useful for example when we not only want to observe the action but also the state of some other store and combine both into one handler.
+This is useful for example when we not only want to observe the action but also the state of some other store and combine both into one handler.
 
 ### Stores are streams
 
@@ -243,21 +243,25 @@ When looking at what Redux does you have to decide between two things.
 1. Being explicit and verbose with separate actions for async start, success and error
 2. Being implicit and just using the async API, e.g. fetch, for starting and handling success, error
 
-There is a little tradeoff (little bit more code) to possibility number one, so lets examine it in more detail to find possible advantages of that approach.
+There is a little tradeoff (little bit more code) to possibility number one, but belief me it is worth the effort.
+Only if every state change is triggered through a separate action, you can implement interesting features like time travel or action event logs.
+And for async actions start, success and error will most probably all change the state.
 
-
+Therefore I encourage you to create one action per state change.
 
 Putting it all together
 ----
 
 So we already have the following:
 
-- actions: stream of occurrences
+- actions: stream of action events
 - stores: stream of state
 - dispatcher: integrated scheduling in Rx
 - views: react UI components
 
 We only need to put it all together!
+
+![FluxRx](/assets/img/fluxRx.svg)
 
 Because actions are streams you can inject them anywhere using DI or some other technique. But in most cases it makes sense to just create them in a store. 
 
@@ -276,5 +280,13 @@ Sounds very much like a flux implementation to me! Even if the terminology and t
 Full code example
 ------
 
-Check out the full example on Github:
-https://github.com/Useurmind/FluxInTypescriptWithRx
+Check out the full example in my [Flux Rx Github repository](https://github.com/Useurmind/FluxInTypescriptWithRx):
+
+[Flux Rx Counter Example](https://github.com/Useurmind/FluxInTypescriptWithRx/tree/master/example/counter)
+
+Conclusion
+---
+Implementing a Flux framework with Rx for usage in the TypeScript language is not that complex.
+The hard part will be to reduce the boilerplate code and implement advanced features like timetravel or event logs for a better debugging experience.
+
+Join me in my next posts concerning this topic and contact me if you have any suggestions.
