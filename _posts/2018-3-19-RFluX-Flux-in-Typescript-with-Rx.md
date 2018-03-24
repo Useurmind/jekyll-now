@@ -282,13 +282,13 @@ Sounds very much like a flux implementation to me! Even if the terminology and t
 Full code example
 ------
 
-Check out the full example in my [Flux Rx Github repository](https://github.com/Useurmind/FluxInTypescriptWithRx):
+Check out the full example in my [RFluX Github repository](https://github.com/Useurmind/RFluX):
 
-[Flux Rx Counter Example](https://github.com/Useurmind/FluxInTypescriptWithRx/tree/master/example/counter)
+[RFluX Counter Example](https://github.com/Useurmind/RFluX/tree/master/example/counter)
 
 Conclusion
 ---
 Implementing a Flux framework with Rx for usage in the TypeScript language is not that complex.
 The hard part will be to reduce the boilerplate code and implement advanced features like timetravel or event logs for a better debugging experience.
 
-Join me in my next posts concerning this topic and contact me if you have any suggestions.
+Join me in my [next post]({% post_url 2018-3-24-RFlux-Middleware %}) concerning this topic and contact me if you have any suggestions.
