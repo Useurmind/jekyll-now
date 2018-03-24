@@ -7,9 +7,9 @@ In my [last post]({% post_url 2018-3-19-RFluX-Flux-in-Typescript-with-Rx %}) we 
 
 What is middleware?
 ---
-Redux introduced the concept of middleware. And because we basically do the same, we will use the same terminology here.
+[Redux](https://redux.js.org/) introduced the concept of middleware. And because we basically do the same, we will use the same terminology here.
 
-Redux middleware represents components that you can hook into the dispatcher that delivers the actions to the stores. By doing that you can implement interesting concepts like an event log or time travel.
+[Redux middleware](https://redux.js.org/advanced/middleware) represents components that you can hook into the dispatcher that delivers the actions to the stores. By doing that you can implement interesting concepts like an event log or time travel.
 
 In our architecture the middleware is not used inside a dispatcher but rather directly subscribing or wrapping all the actions we create.
 
