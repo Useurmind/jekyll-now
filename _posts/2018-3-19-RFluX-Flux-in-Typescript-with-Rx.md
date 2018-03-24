@@ -1,6 +1,6 @@
 ---
 layout: post
-title: RFluX: Flux in TypeScript with Rx
+title: RFluX &minus; Flux in TypeScript with Rx
 ---
 
 In this article I want to show my thoughts on how to implement a simple flux framework for TypeScript apps based on Rx.
