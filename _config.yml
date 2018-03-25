@@ -3,10 +3,13 @@
 #
 
 # Name of your site (displayed in the header)
-name: "Jochen Grün"
+name: "Useurmind"
 
 # Short bio or description (displayed in the header)
-description: "Full stack software developer and architect"
+description: "Mastering the art of software craftsmanship"
+
+# name of the author of the blog
+author: Jochen Grün
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://raw.githubusercontent.com/useurmind/useurmind.github.io/master/images/jekyll-logo.png
