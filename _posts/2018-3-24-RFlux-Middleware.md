@@ -1,7 +1,7 @@
 ---
 layout: post
 title: RFluX Middleware
-tags: Rx, TypeScript, RFluX, Flux, Middleware
+tags: Rx TypeScript RFluX Flux Middleware
 ---
 
 In my [last post]({% post_url 2018-3-19-RFluX-Flux-in-Typescript-with-Rx %}) we discussed how to setup a very basic flux framework in TypeScript with the help of Rx. Now we will take a look at a feature that will give us some real benefit thanks to the architecture we choose: action middleware.

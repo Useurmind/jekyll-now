@@ -1,7 +1,7 @@
 ---
 layout: post
 title: RFluX &minus; Flux in TypeScript with Rx
-tags: Rx, TypeScript, RFluX, Flux, Action, Store
+tags: Rx TypeScript RFluX Flux Action Store
 ---
 
 In this article I want to show my thoughts on how to implement a simple flux framework for TypeScript apps based on Rx.
