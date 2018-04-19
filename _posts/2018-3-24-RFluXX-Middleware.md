@@ -1,10 +1,10 @@
 ---
 layout: post
-title: RFluX Middleware
-tags: Rx TypeScript RFluX Flux Middleware
+title: RFluXX Middleware
+tags: Rx TypeScript RFluXX Flux Middleware
 ---
 
-In my [last post]({% post_url 2018-3-19-RFluX-Flux-in-Typescript-with-Rx %}) we discussed how to setup a very basic flux framework in TypeScript with the help of Rx. Now we will take a look at a feature that will give us some real benefit thanks to the architecture we choose: action middleware.
+In my [last post]({% post_url 2018-3-19-RFluXX-Flux-in-Typescript-with-Rx %}) we discussed how to setup a very basic flux framework in TypeScript with the help of Rx. Now we will take a look at a feature that will give us some real benefit thanks to the architecture we choose: action middleware.
 
 What is middleware?
 ---
@@ -220,7 +220,7 @@ At the moment this example may look a little bit contrived but we will need this
 
 Conclusion
 ---
-Implementing action middleware in [RFluX](https://github.com/Useurmind/RFluX) was not as hard as I initially thought it to be. The hardest part surely was to wrap an action.
+Implementing action middleware in [RFluXX](https://github.com/Useurmind/RFluXX) was not as hard as I initially thought it to be. The hardest part surely was to wrap an action.
 You can decide for yourself if you found that complex. But in the end it was very little functional code.
 
 I hope you have enjoyed this post and join me in one of my next posts where I want to show you how time travel can be implemented with

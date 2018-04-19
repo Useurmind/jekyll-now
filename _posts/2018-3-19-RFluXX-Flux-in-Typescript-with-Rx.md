@@ -1,7 +1,7 @@
 ---
 layout: post
-title: RFluX &minus; Flux in TypeScript with Rx
-tags: Rx TypeScript RFluX Flux Action Store
+title: RFluXX &minus; Flux in TypeScript with Rx
+tags: Rx TypeScript RFluXX Flux Action Store
 ---
 
 In this article I want to show my thoughts on how to implement a simple flux framework for TypeScript apps based on Rx.
@@ -283,13 +283,13 @@ Sounds very much like a flux implementation to me! Even if the terminology and t
 Full code example
 ------
 
-Check out the full example in my [RFluX Github repository](https://github.com/Useurmind/RFluX):
+Check out the full example in my [RFluXX Github repository](https://github.com/Useurmind/RFluXX):
 
-[RFluX Counter Example](https://github.com/Useurmind/RFluX/tree/master/example/counter)
+[RFluXX Counter Example](https://github.com/Useurmind/RFluXX/tree/master/example/counter)
 
 Conclusion
 ---
 Implementing a Flux framework with Rx for usage in the TypeScript language is not that complex.
 The hard part will be to reduce the boilerplate code and implement advanced features like timetravel or event logs for a better debugging experience.
 
-Join me in my [next post]({% post_url 2018-3-24-RFlux-Middleware %}) concerning this topic and contact me if you have any suggestions.
+Join me in my [next post]({% post_url 2018-3-24-RFluXX-Middleware %}) concerning this topic and contact me if you have any suggestions.
